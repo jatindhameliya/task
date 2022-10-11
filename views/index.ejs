@@ -1,0 +1,261 @@
+<style>
+	.badge-success {
+		font-size: 12px;
+		background-color: #44a675
+	}
+
+	.badge-danger {
+		font-size: 12px;
+		background-color: #f44336
+	}
+</style>
+<script src="/javascripts/controllers/home.controller.js"></script>
+<div class="main-content" ng-controller="HomeController">
+	<!-- HEADER -->
+	<div class="header">
+		<div class="container-fluid">
+			<!-- Body -->
+			<div class="header-body">
+				<div class="row align-items-end">
+					<div class="col">
+						<!-- Pretitle -->
+						<h6 class="header-pretitle">
+							Welcome :
+						</h6>
+						<!-- Title -->
+						<h1 class="header-title">
+							Dashboard
+						</h1>
+					</div>
+				</div> <!-- / .row -->
+			</div> <!-- / .header-body -->
+		</div>
+	</div> <!-- / .header -->
+	<!-- CARDS -->
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12 col-lg-6 col-xl">
+				<!-- Value  -->
+				<div class="card">
+					<div class="card-body">
+						<div class="row align-items-center gx-0">
+							<div class="col">
+
+								<!-- Title -->
+								<h6 class="text-uppercase text-muted mb-2">
+									Active Documents
+								</h6>
+
+								<!-- Heading -->
+								<span class="h2 mb-0">
+									{{totalActivePost}}
+								</span>
+
+							</div>
+						</div> <!-- / .row -->
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-lg-6 col-xl">
+				<!-- Hours -->
+				<div class="card">
+					<div class="card-body">
+						<div class="row align-items-center gx-0">
+							<div class="col">
+
+								<!-- Title -->
+								<h6 class="text-uppercase text-muted mb-2">
+									Active Customers
+								</h6>
+
+								<!-- Heading -->
+								<span class="h2 mb-0">
+									{{totalInactivePost}}
+								</span>
+
+							</div>
+
+						</div> <!-- / .row -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="col-12">
+				<div class="header">
+					<div class="header-body">
+						<div class="row align-items-center">
+							<div class="col">
+								<h6 class="header-pretitle">
+									List
+								</h6>
+								<h1 class="header-title text-truncate ">
+									Posts List
+								</h1>
+							</div>
+							<div class="col-auto">
+								<a href="#" ng-click="addNewPost()" class="btn btn-primary ms-2">Add New Post</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane fade show active" id="contactsListPane" role="tabpanel"
+						aria-labelledby="contactsListTab">
+						<div class="card" id="contactsList">
+							<div class="card-header">
+								<div class="row align-items-center">
+									<div class="col">
+										<form>
+											<div
+												class="input-group input-group-flush input-group-merge input-group-reverse">
+												<input class="form-control list-search" type="search" ng-model="search"
+													ng-keyup="getPosts()" placeholder="Search">
+												<span class="input-group-text">
+													<i class="fe fe-search"></i>
+												</span>
+											</div>
+										</form>
+									</div>
+									<div class="col-auto me-n3">
+										<form>
+											<select class="form-select form-select-sm form-control-flush" ng-model="limit"
+												ng-change="onLimitChange()">
+												<option value="10">10 per page</option>
+												<option value="25">25 per page</option>
+												<option value="50">50 per page</option>
+												<option value="100">100 per page</option>
+											</select>
+										</form>
+									</div>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-sm table-hover table-nowrap card-table">
+									<thead>
+										<tr>
+											<th>
+												<a class="list-sort text-muted" href="#">Title</a>
+											</th>
+											<th>
+												<a class="list-sort text-muted" href="#">Body</a>
+											</th>
+											<th>
+												<a class="list-sort text-muted" href="#">Status</a>
+											</th>
+											<th>
+												<a class="list-sort text-muted" href="#">Created At</a>
+											</th>
+											<th>
+												<a class="list-sort text-muted" href="#">Updated At</a>
+											</th>
+											<th class="text-end">
+												<a class="list-sort text-muted" href="#">Action</a>
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="post in postList.docs">
+											<td>
+												<span class="item-name">{{post.title}}</span>
+											</td>
+											<td>
+												<span class="item-name">{{post.body}}</span>
+											</td>
+											<td>
+												<span class="item-name badge badge-{{(post.status) ? 'success' : 'danger'}}">{{(post.status) ? 'Active' : 'In-Active'}}</span>
+											</td>
+											<td>
+												<span class="item-email">{{post.createdAt | date:'medium'}}</span>
+											</td>
+											<td>
+												<span class="item-email">{{post.updatedAt | date:'medium'}}</span>
+											</td>
+											<td class="text-end">
+												<a href="#" class="btn btn-light mx-1 btn-sm"
+													ng-click="onEdit(post)"><i class="fe fe-edit"></i></a>
+												<a href="#" class="btn btn-light mx-1 btn-sm"
+													ng-click="onDelete(post)"><i class="fe fe-trash-2"></i></a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="card-footer d-flex justify-content-between">
+								<ul class="list-pagination-prev pagination pagination-tabs card-pagination">
+									<li class="page-item {{ postList.hasPrevPage ? '' : 'disabled' }}">
+										<a class="page-link ps-0 pe-4 border-end" href="#"
+											ng-click="switchPage(postList.prevPage)">
+											<i class="fe fe-arrow-left me-1"></i> Prev
+										</a>
+									</li>
+								</ul>
+								<ul class="list-pagination pagination pagination-tabs card-pagination">
+									<li class="page-item {{ page == n ? 'active' : '' }} {{ n==0 ? 'disabled' : '' }}"
+										ng-repeat="n in pageNumberList track by $index">
+										<a href="" class="page-link" ng-click="switchPage(n)">
+											{{n==0?'...':n}}
+										</a>
+									</li>
+								</ul>
+								<ul class="list-pagination-next pagination pagination-tabs card-pagination">
+									<li class="page-item {{ postList.hasNextPage ? '' : 'disabled' }}">
+										<a class="page-link  ps-4 pe-0 border-start" href="#"
+											ng-click="switchPage(postList.nextPage)">
+											Next <i class="fe fe-arrow-right ms-1"></i>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="newPostModel" tabindex="-1" role="dialog" aria-labelledby="createGroupLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-zoom">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="createGroupLabel">New Post</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form ng-submit="onPostSave()">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="">Title <span style="color:red">*</span></label>
+							<input type="text" class="form-control" ng-model="title" required>
+						</div>
+						<div class="form-group">
+							<label for="">Body <span style="color:red">*</span></label>
+							<textarea class="form-control" ng-model="body" required></textarea>
+						</div>
+						<div class="form-group">
+							<label for="">Status <span style="color:red">*</span></label>
+							<select class="form-control" ng-model="status">
+								<option value="Active">Active</option>
+								<option value="In-Active">In-Active</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="">Latitude <span style="color:red">*</span></label>
+							<input type="text" class="form-control" ng-model="latitude" required>
+						</div>
+						<div class="form-group">
+							<label for="">Longitude <span style="color:red">*</span></label>
+							<input type="text" class="form-control" ng-model="longitude" required>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-end">
+						<button type="submit" class="btn btn-primary">Save</button>
+						<button type="reset"  ng-click="clearPost()" class="btn btn-primary">Clear</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
